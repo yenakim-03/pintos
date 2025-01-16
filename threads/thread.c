@@ -240,6 +240,15 @@ bool compare_priority(const struct list_elem *a, const struct list_elem *b, void
     return t_a->priority > t_b->priority;
 }
 
+void check_priority_and_yield(void) {
+    if (list_empty(&ready_list)) {
+        return;
+    }
+    if (thread_current()->priority < list_entry(list_front(&ready_list), struct thread, elem)) {
+        thread_yield();
+    }
+}
+
 /* Puts the current thread to sleep.  It will not be scheduled
    again until awoken by thread_unblock().
 
