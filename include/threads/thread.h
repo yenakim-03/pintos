@@ -120,7 +120,9 @@ void thread_start(void);
 
 void thread_tick(void);
 void thread_print_stats(void);
+
 void thread_sleep(int64_t ticks);
+void thread_awake(int64_t ticks);
 
 typedef void thread_func(void *aux);
 tid_t thread_create(const char *name, int priority, thread_func *, void *);

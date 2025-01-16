@@ -166,6 +166,20 @@ void thread_sleep(int64_t ticks) {
     intr_set_level(old_level);
 }
 
+void thread_awake(int64_t ticks) {
+    struct list_elem *current = list_begin(&sleep_list);
+
+    while (current != list_end(&sleep_list)) {
+        struct thread *t = list_entry(current, struct thread, elem);
+        if (t->wakeup_time <= ticks) {
+            current = list_remove(current);
+            thread_unblock(t);
+        } else {
+            current = list_next(current);
+        }
+    }
+}
+
 /* Prints thread statistics. */
 void thread_print_stats(void) {
     printf("Thread: %lld idle ticks, %lld kernel ticks, %lld user ticks\n",
