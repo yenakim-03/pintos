@@ -233,6 +233,13 @@ tid_t thread_create(const char *name, int priority, thread_func *function,
     return tid;
 }
 
+bool compare_priority(const struct list_elem *a, const struct list_elem *b, void *aux) {
+    struct thread *t_a = list_entry(a, struct thread, elem);
+    struct thread *t_b = list_entry(b, struct thread, elem);
+
+    return t_a->priority > t_b->priority;
+}
+
 /* Puts the current thread to sleep.  It will not be scheduled
    again until awoken by thread_unblock().
 
