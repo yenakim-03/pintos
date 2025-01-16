@@ -153,6 +153,19 @@ void thread_tick(void) {
     if (++thread_ticks >= TIME_SLICE) intr_yield_on_return();
 }
 
+void thread_sleep(int64_t ticks) {
+    struct thread *t = thread_current();
+    enum intr_level old_level = intr_disable();
+
+    ASSERT(t != idle_thread);
+
+    t->wakeup_time = ticks;
+    list_push_back(&sleep_list, &t->elem);
+    thread_block();
+
+    intr_set_level(old_level);
+}
+
 /* Prints thread statistics. */
 void thread_print_stats(void) {
     printf("Thread: %lld idle ticks, %lld kernel ticks, %lld user ticks\n",
