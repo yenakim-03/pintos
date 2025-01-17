@@ -238,6 +238,16 @@ void cond_init(struct condition *cond) {
     list_init(&cond->waiters);
 }
 
+bool compare_sema_priority(const struct list_elem *a, const struct list_elem *b, void *aux) {
+    struct semaphore_elem *sema_a = list_entry(a, struct semaphore_elem, elem);
+    struct semaphore_elem *sema_b = list_entry(b, struct semaphore_elem, elem);
+
+    struct thread *t_a = list_entry(list_begin(&(sema_a->semaphore.waiters)), struct thread, elem);
+    struct thread *t_b = list_entry(list_begin(&(sema_b->semaphore.waiters)), struct thread, elem);
+
+    return t_a->priority > t_b->priority;
+}
+
 /* Atomically releases LOCK and waits for COND to be signaled by
    some other piece of code.  After COND is signaled, LOCK is
    reacquired before returning.  LOCK must be held before calling
